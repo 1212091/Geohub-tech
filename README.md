@@ -11,12 +11,12 @@ product-service, user-service, order-service. We use Docker to containerize thes
  - Make sure you have installed `docker` and `docker-compose`
  - Run `docker-compose up`
  - Head over to:
-   http://localhost:8081/api/v1/products/docs for product service docs 
-   http://localhost:8082/api/v1/users/docs for user service docs
-   http://localhost:8083/api/v1/orders/docs for order service docs
+   http://localhost:8080/api/v1/products/docs for product service docs 
+   http://localhost:8080/api/v1/users/docs for user service docs
+   http://localhost:8080/api/v1/orders/docs for order service docs
  - Sample curl command:
-   View - sort - filter product: curl --location --request GET 'localhost:8081/api/v1/products?filter_code=SAM&sort_by=code&user_id=1&sort_asc=True'
-   Create an order: curl --location --request POST 'localhost:8083/api/v1/orders' \
+   + View - sort - filter product: `curl --location --request GET 'localhost:8081/api/v1/products?filter_code=SAM&sort_by=code&user_id=1&sort_asc=True'`
+   + Create an order: `curl --location --request POST 'localhost:8083/api/v1/orders' \
                    --header 'Content-Type: application/json' \
                    --data-raw '{
                         "order_user_id": 1,
@@ -32,4 +32,4 @@ product-service, user-service, order-service. We use Docker to containerize thes
                                 "quantity": 3
                             }
                         ]
-                }'
+                }'`

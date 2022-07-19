@@ -1,9 +1,9 @@
+"""Database objects for product service"""
 import os
 
-from sqlalchemy import (Column, DateTime, Integer, BigInteger, MetaData, String, Table,
-                        create_engine, ARRAY)
-
 from databases import Database
+from sqlalchemy import (BigInteger, Column, Integer, MetaData, String, Table,
+                        create_engine)
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 
@@ -20,5 +20,4 @@ products = Table(
     Column('price', BigInteger),
     Column('platform', String(50))
 )
-
 database = Database(DATABASE_URI)

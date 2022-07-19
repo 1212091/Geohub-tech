@@ -1,17 +1,10 @@
+"""Database objects for user service"""
+
 import os
 
-from sqlalchemy import (
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-    create_engine
-)
-
 from databases import Database
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, MetaData,
+                        String, Table, create_engine)
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 

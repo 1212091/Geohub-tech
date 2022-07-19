@@ -1,17 +1,23 @@
 from fastapi import FastAPI
+
+from app.api.db import database, engine, metadata
 from app.api.products import products
-from app.api.db import metadata, database, engine
 
 metadata.create_all(engine)
 
-app = FastAPI(openapi_url="/api/v1/products/openapi.json", docs_url="/api/v1/products/docs")
+app = FastAPI(openapi_url="/api/v1/products/openapi.json",
+              docs_url="/api/v1/products/docs")
+
 
 @app.on_event("startup")
 async def startup():
+    """Start up service event"""
     await database.connect()
+
 
 @app.on_event("shutdown")
 async def shutdown():
+    """Shut down service event"""
     await database.disconnect()
 
 

@@ -1,16 +1,17 @@
+"""Handle CRUD operation for order service"""
+
 import datetime
+
+from app.api.db import database, order_items, orders
+from app.api.models import Order, OrderIn, OrderItem
+from app.api.service import is_product_existed, is_user_existed, is_user_valid
 from fastapi import HTTPException
-from app.api.models import OrderIn, Order, OrderItem
-from app.api.db import orders, order_items, database
-from app.api.service import (
-    is_user_existed,
-    is_user_valid,
-    is_product_existed
-)
 
 NEW_STATUS = "NEW"
 
+
 async def add_order(order_input: OrderIn):
+    """Add a new order and order item to database"""
     validate_order_input(order_input)
     order = Order(
         user_id=order_input.user_id,
@@ -21,7 +22,7 @@ async def add_order(order_input: OrderIn):
     )
     query = orders.insert().values(**order.dict())
     order_output = await database.execute(query=query)
-    
+
     for order_item_input in order_input.order_item_inputs:
         order_item = OrderItem(
             order_id=order_output,
@@ -35,25 +36,30 @@ async def add_order(order_input: OrderIn):
 
 
 def validate_order_input(order_input: OrderIn):
+    """Validate order input from user"""
     if not is_user_existed(order_input.order_user_id):
         raise HTTPException(
             status_code=400,
-            detail=f"User with given id: {order_input.order_user_id} is not existed"
+            detail=f"User with given id: {order_input.order_user_id} is "
+            "not existed"
         )
     if not is_user_existed(order_input.user_id):
         raise HTTPException(
             status_code=400,
-            detail=f"User with given id: {order_input.user_id} is not existed"
+            detail=f"User with given id: {order_input.user_id} is "
+            "not existed"
         )
     if not is_user_valid(order_input.user_id):
         raise HTTPException(
             status_code=400,
-            detail=f"User with given id: {order_input.user_id} is not Call Center"
+            detail=f"User with given id: {order_input.user_id} is "
+            "not Call Center"
         )
-    
+
     for order_item_input in order_input.order_item_inputs:
         if not is_product_existed(order_item_input.product_id):
             raise HTTPException(
                 status_code=400,
-                detail=f"Product with given id: {order_item_input.product_id} is not existed"
+                detail=f"Product with given id: {order_item_input.product_id} "
+                "is not existed"
             )

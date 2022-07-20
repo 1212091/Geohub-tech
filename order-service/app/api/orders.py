@@ -7,7 +7,12 @@ from fastapi import APIRouter
 orders = APIRouter()
 
 
-@orders.post('/', response_model=OrderOut, status_code=201)
+@orders.post(
+    '/',
+    summary="Create a new order",
+    response_model=OrderOut,
+    status_code=201
+)
 async def create_order(order_input: OrderIn):
     """Create a new order"""
     order_id = await db_manager.add_order(order_input)

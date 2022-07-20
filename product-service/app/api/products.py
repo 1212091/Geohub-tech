@@ -2,12 +2,12 @@
 
 #pylint: disable=too-many-arguments
 
-from typing import List, Union
+from typing import List, Optional, Union
 
 from app.api import db_manager
 from app.api.models import ProductIn, ProductOut
 from app.api.service import save_user_activity
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Path, Query
 
 products = APIRouter()
 
@@ -15,7 +15,12 @@ products = APIRouter()
 DEFAULT_SORT_BY = "code"
 
 
-@products.post('/', response_model=ProductOut, status_code=201)
+@products.post(
+    '/',
+    summary="Create a new product",
+    response_model=ProductOut,
+    status_code=201
+)
 async def create_product(payload: ProductIn):
     """Create a new product"""
     product_id = await db_manager.add_product(payload)
@@ -26,15 +31,41 @@ async def create_product(payload: ProductIn):
     return response
 
 
-@products.get('/', response_model=List[ProductOut])
+@products.get(
+    '/',
+    summary=(
+        "Get a list of products. Users can filter or sort by some fields."
+    ),
+    response_model=List[ProductOut]
+)
 async def get_products(
-    user_id: int,
-    sort_by: str = DEFAULT_SORT_BY,
-    sort_asc: bool = False,
-    filter_code: Union[str, None] = None,
-    filter_name: Union[str, None] = None,
-    filter_price: Union[int, None] = None,
-    filter_platform: Union[str, None] = None
+    user_id: int = Query(
+        ..., description="Returns UI constructor parameters if True"
+    ),
+    sort_by: str = Query(
+        DEFAULT_SORT_BY,
+        description="Input field response can be sorted by"
+    ),
+    sort_asc: bool = Query(
+        False,
+        description="Sort value ascending or descending"
+    ),
+    filter_code: Optional[str] = Query(
+        None,
+        description="Filter result by code"
+    ),
+    filter_name: Optional[str] = Query(
+        None,
+        description="Filter result by product name"
+    ),
+    filter_price: Optional[int] = Query(
+        None,
+        description="Filter result by product price"
+    ),
+    filter_platform: Optional[int] = Query(
+        None,
+        description="Filter result by product platform"
+    )
 ):
     """Get a list of product with some filter and sort"""
     await save_user_activity(
@@ -57,8 +88,16 @@ async def get_products(
     return list_product
 
 
-@products.get('/{product_id}/', response_model=ProductOut)
-async def get_product(product_id: int):
+@products.get(
+    '/{product_id}/',
+    summary="Get product by id",
+    response_model=ProductOut
+)
+async def get_product(
+    product_id: int = Path(
+        ..., description="id of product"
+    ),
+):
     """Get a product by id"""
     product = await db_manager.get_product(product_id)
     if not product:

@@ -10,7 +10,12 @@ from fastapi import APIRouter, HTTPException
 users = APIRouter()
 
 
-@users.post('/', response_model=UserOut, status_code=201)
+@users.post(
+    '/',
+    summary="Create new user",
+    response_model=UserOut,
+    status_code=201
+)
 async def create_user(payload: UserIn):
     """Create new user"""
     user_id = await db_manager.add_user(payload)
@@ -21,7 +26,12 @@ async def create_user(payload: UserIn):
     return response
 
 
-@users.post('/role', response_model=UserRoleOut, status_code=201)
+@users.post(
+    '/role',
+    summary="Create new role",
+    response_model=UserRoleOut,
+    status_code=201
+)
 async def create_user_role(payload: UserRoleIn):
     """Create new user role"""
     user_role_id = await db_manager.add_user_role(payload)
@@ -32,7 +42,11 @@ async def create_user_role(payload: UserRoleIn):
     return response
 
 
-@users.post('/activity', status_code=201)
+@users.post(
+    '/activity',
+    summary="Create new user activity",
+    status_code=201
+)
 async def create_user_activity(payload: UserActivityIn):
     """Create new user activity"""
     user_activity_id = await db_manager.add_user_activity(payload)
@@ -42,13 +56,21 @@ async def create_user_activity(payload: UserActivityIn):
     return response
 
 
-@users.get('/activity', response_model=List[UserActivityOut])
+@users.get(
+    '/activity',
+    summary="Get all user activities",
+    response_model=List[UserActivityOut]
+)
 async def get_user_activities():
     """Get all user activities"""
     return await db_manager.get_all_user_activities()
 
 
-@users.get('/{user_id}/', response_model=UserOut)
+@users.get(
+    '/{user_id}/',
+    summary="Get user by user id",
+    response_model=UserOut
+)
 async def get_user(user_id: int):
     """Get user by user id"""
     user = await db_manager.get_user_by_id(user_id)
@@ -57,7 +79,11 @@ async def get_user(user_id: int):
     return user
 
 
-@users.get('/role/{role_id}/', response_model=UserRoleOut)
+@users.get(
+    '/role/{role_id}/',
+    summary="Get user role by user role id",
+    response_model=UserRoleOut
+)
 async def get_user_role(role_id: int):
     """Get user role by user role id"""
     user_role = await db_manager.get_user_role_by_id(role_id)
